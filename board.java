@@ -1,9 +1,9 @@
-package Sorting_game_java;
-
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
+import java.util.*;
 
-class drawing extends Canvas {
+class drawing extends Canvas{
     public void paint(Graphics g) {
         // 1st rows
         g.drawRect(10,10,120,160);
@@ -26,13 +26,14 @@ class drawing extends Canvas {
     }
 }
 
-public class board {
+public class board implements MouseListener{
 
     public static String board[][] = {{"A","B","C","D"},{"E","F","G","H"},{"I","J","K"," "}};
     public static String save_board[] = {"A","B","C","D","E","F","G","H","I","J","K"," "};
     public static String sorted_board[][] = {{"A","B","C","D"},{"E","F","G","H"},{"I","J","K"," "}};
     public JFrame f;
     public static void main(String[] args) {
+        random_board();
         board j = new board();
         j.setup();
     }
@@ -105,6 +106,7 @@ public class board {
         f.add(l_8);f.add(l_9);f.add(l_10);f.add(l_11);
         f.add(d);
 
+        f.addMouseListener(this);
         f.setSize(510,535);
         f.setVisible(true);
         f.setLayout(null);
@@ -117,5 +119,100 @@ public class board {
             l_8.setText(board[2][0]);l_9.setText(board[2][1]);l_10.setText(board[2][2]);l_11.setText(board[2][3]);
         }
 
+
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent ev) {
+        String temp = "X";
+        int mY = ev.getX() / 120;
+        int mX = ev.getY() / 160;
+        try{
+            if(mX+1 <= 2 && board[mX+1][mY].equals(" ")){
+                temp = board[mX][mY];
+                board[mX][mY] = board[mX+1][mY];
+                board[mX+1][mY] = temp;
+            }
+            else if(mX-1 >= 0 && board[mX-1][mY].equals(" ")){
+                temp = board[mX][mY];
+                board[mX][mY] = board[mX-1][mY];
+                board[mX-1][mY] = temp;
+            }
+
+            else if(mY+1 <= 3 && board[mX][mY+1].equals(" ")){
+                temp = board[mX][mY];
+                board[mX][mY] = board[mX][mY+1];
+                board[mX][mY+1] = temp;
+            }
+
+            else if(mY-1 >= 0 && board[mX][mY-1].equals(" ")){
+                temp = board[mX][mY];
+                board[mX][mY] = board[mX][mY-1];
+                board[mX][mY-1] = temp;
+            }
+            if(check_winner() == true){
+                f.setVisible(false);
+                JFrame winner = new JFrame("Sorting_Game");
+                JLabel lwin = new JLabel(" You Win!");
+                lwin.setBounds(400,250,100,100);
+                lwin.setFont(new Font("Sample glyphs",Font.BOLD, 90));
+                winner.setVisible(true);
+                winner.add(lwin);
+                winner.setSize(500,500);
+                winner.setResizable(false);
+            }
+
+        }
+
+        catch(Exception e){
+
+        }
+
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent mouseEvent) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent mouseEvent) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent mouseEvent) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {}
+
+    public static void random_board() {
+        String character[] = {"A","B","C","D","E","F","G","H","I","J","K"," "};
+        ArrayList<String> boardStr = new ArrayList<String>();
+        for (int i = 0; i < 12; i++){
+            boardStr.add(character[i]);
+        }
+        Collections.shuffle(boardStr);
+        String rd_board[] = boardStr.toArray(new String[0]);
+
+        int s = 0;
+        for (int i = 0; i < 3; i++){
+            for (int j = 0; j < 4; j++){
+                board[i][j] = rd_board[s];
+                s += 1;
+            }
+        }
+    }
+
+    public static boolean check_winner(){
+        if(Arrays.deepEquals(board,sorted_board)) {
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 }
