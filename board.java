@@ -1,5 +1,3 @@
-package Sorting_game_GUI_java;
-
 import java.util.*;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -46,6 +44,7 @@ public class board implements MouseListener{
     public static String save_board[] = {"A","B","C","D","E","F","G","H","I","J","K"," "};
     public static String sorted_board[][] = {{"A","B","C","D"},{"E","F","G","H"},{"I","J","K"," "}};
     public JFrame f;
+    public static int count = 1;
     public static void main(String[] args) {
         random_board();
         loadxml();
@@ -167,6 +166,7 @@ public class board implements MouseListener{
                 board[mX][mY-1] = temp;
             }
             savexml();
+            count++;
             if(check_winner() == true){
                 f.setVisible(false);
                 JFrame winner = new JFrame("Sorting_Game");
@@ -239,21 +239,37 @@ public class board implements MouseListener{
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.newDocument();
 
-            Element sorting_game = doc.createElement("sorting_game");
+            Element sorting_game = doc.createElement("ABCBlockMAP");
             doc.appendChild(sorting_game);
+
+            Element info = doc.createElement("information");
+            sorting_game.appendChild(info);
+
+            Element version = doc.createElement("GameVersion");
+            version.appendChild(doc.createTextNode("3"));
+            info.appendChild(version);
+
+            Element ptime = doc.createElement("PlayTime");
+            ptime.appendChild(doc.createTextNode("0"));
+            info.appendChild(ptime);
+
+            Element move_count = doc.createElement("MoveCount");
+            move_count.appendChild(doc.createTextNode(String.valueOf(count)));
+            info.appendChild(move_count);
+
 
             Element map = doc.createElement("Map");
             sorting_game.appendChild(map);
 
-            Element row1 = doc.createElement("row1");
+            Element row1 = doc.createElement("Row1");
             row1.appendChild(doc.createTextNode(board[0][0]+board[0][1]+board[0][2]+board[0][3]));
             map.appendChild(row1);
 
-            Element row2 = doc.createElement("row2");
+            Element row2 = doc.createElement("Row2");
             row2.appendChild(doc.createTextNode(board[1][0]+board[1][1]+board[1][2]+board[1][3]));
             map.appendChild(row2);
 
-            Element row3 = doc.createElement("row3");
+            Element row3 = doc.createElement("Row3");
             row3.appendChild(doc.createTextNode(board[2][0]+board[2][1]+board[2][2]+board[2][3]));
             map.appendChild(row3);
 
